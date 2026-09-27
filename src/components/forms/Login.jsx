@@ -31,10 +31,13 @@ const Login = () => {
   }
 
   return (
-    <div className="flex flex-col justify-center items-center ">
-        <form className="p-4 border" onSubmit={handleSubmit}>
+    <div className="flex flex-col gap-4 justify-center items-center border p-6 w-fit min-w-[18rem]">
+        <h1 className="text-[1.5rem] font-semibold">Login</h1>
+
+        <form className="flex flex-col gap-2 w-full" onSubmit={handleSubmit}>
 
           <input
+            className="p-2 border"
             type="text"
             placeholder="Username or Email"
             value={usernameOrEmail}
@@ -43,6 +46,7 @@ const Login = () => {
           />
 
           <input
+            className="p-2 border"
             type="password"
             placeholder="Password"
             value={password}
@@ -51,8 +55,10 @@ const Login = () => {
           />
 
           {error && <p className="text-red-500">{error}</p>}
-          
-          <button type="submit">Login</button>
+
+          <p>Don't have an account? <a href="/sign-up" className="text-blue-800">Sign Up</a></p>
+
+          <button className="py-2 border hover:bg-black hover:text-white cursor-pointer" type="button">Login</button>
         </form>
     </div>
   )

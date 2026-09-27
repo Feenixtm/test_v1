@@ -39,9 +39,12 @@ const SignUp = () => {
   }
 
   return (
-    <div className="flex flex-col justify-center items-center ">
-        <form className="p-4 border" onSubmit={handleSubmit}>
+    <div className="flex flex-col gap-4 justify-center items-center border p-6 w-fit min-w-[18rem]">
+        <h1 className="text-[1.5rem] font-semibold">Sign Up</h1>
+      
+        <form className="flex flex-col gap-2 w-full" onSubmit={handleSubmit}>
           <input
+            className="p-2 border"
             type="text"
             placeholder="Username"
             value={username}
@@ -49,6 +52,7 @@ const SignUp = () => {
             required
           />
           <input
+            className="p-2 border"
             type="email"
             placeholder="Email"
             value={email}
@@ -56,6 +60,7 @@ const SignUp = () => {
             required
           />
           <input
+            className="p-2 border"
             type="password"
             placeholder="Password"
             value={password}
@@ -63,13 +68,17 @@ const SignUp = () => {
             required
           />
           <input
+            className="p-2 border"
             type="password"
             placeholder="Confirm Password"
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
             required
           />
-          <button type="submit">Sign Up</button>
+          {error && <p className="text-red-500">{error}</p>}
+          <p>Already have an account? <a href="/login" className="text-blue-800">Login</a></p>
+
+          <button className="py-2 border hover:bg-black hover:text-white cursor-pointer" type="button">Sign Up</button>
         </form>
     </div>
   )
