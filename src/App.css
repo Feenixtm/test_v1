@@ -4,6 +4,7 @@
     --black-15: #0f0f0f;
     --black-33: #212121;
     --black-45: #2d2d2d;
+    --black-90: #5a5a5a;
     --gray-160: #a0a0a0;
     --white-241: #f1f1f1;
 }
@@ -19,4 +20,14 @@ h1 {
 
 nav {
     color: var(--white-241);
+}
+
+button:hover {
+    background-color: var(--black-90);
+    cursor: pointer;
+    color: var(--white-241);
+}
+
+.container {
+    background-color: var(--black-33);
 }
