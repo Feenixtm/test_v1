@@ -76,7 +76,7 @@ const SignUp = () => {
             required
           />
           {error && <p className="text-red-500">{error}</p>}
-          <p>Already have an account? <a href="/login" className="text-blue-800">Login</a></p>
+          <p>Already have an account? <a href="/login" className="text-blue-500">Login</a></p>
 
           <button className="py-2 border hover:bg-black hover:text-white cursor-pointer" type="button">Sign Up</button>
         </form>

@@ -1,1 +1,22 @@
 @import "tailwindcss";
+
+:root {
+    --black-15: #0f0f0f;
+    --black-33: #212121;
+    --black-45: #2d2d2d;
+    --gray-160: #a0a0a0;
+    --white-241: #f1f1f1;
+}
+
+main {
+    background-color: var(--black-15); 
+    color: var(--gray-160);
+}
+
+h1 {
+    color: var(--white-241);
+}
+
+nav {
+    color: var(--white-241);
+}

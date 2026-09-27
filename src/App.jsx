@@ -10,6 +10,9 @@ import Journal from './features/journal/components/Journal';
 import Habits from './features/habits/components/Habits';
 import Tasks from './features/tasks/components/Tasks';
 
+import YearlyHeatmap from './features/heatmaps/components/YearlyHeatmap';
+import MonthlyHeatmap from './features/heatmaps/components/MonthlyHeatmap';
+
 
 function App() {
 
@@ -23,11 +26,13 @@ function App() {
 
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/sign-up" element={<SignUp />} />
+          <Route path="/heatmaps/yearly" element={<YearlyHeatmap />} />
+          <Route path="/heatmaps/monthly" element={<MonthlyHeatmap />} />
           <Route path="/journal" element={<Journal />} />
           <Route path="/habits" element={<Habits />} />
           <Route path="/tasks" element={<Tasks />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/sign-up" element={<SignUp />} />
         </Routes>
 
         </main>
