@@ -19,7 +19,8 @@ const AddTaskOverlay = (props) => {
             id: tasks.length + 1,
             title, 
             description,
-            completed: false
+            completed: false,
+            dateCommpleted: new Date()
         }
 
         console.log(newTask);
