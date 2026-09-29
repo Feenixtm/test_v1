@@ -31,3 +31,7 @@ button:hover {
 .container {
     background-color: var(--black-33);
 }
+
+.dark-transparent-bg {
+    background-color: rgba(0, 0, 0, 0.5)
+}
