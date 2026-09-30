@@ -56,7 +56,10 @@ const YearlyHeatmap = () => {
                 }
                 {
                     allViewableDates.map((date, index) => (
-                        <div key={index} className="yearly-date-block relative" style={{ backgroundColor: mockCompletedDates.includes(date.toDateString()) ? "green" : "var(--black-45)" }}
+                        <div 
+                            key={index} 
+                            className="yearly-date-block relative" 
+                            style={{ backgroundColor: mockCompletedDates.includes(date.toDateString()) ? "green" : "var(--black-45)" }}
                             onMouseOver={(e) => e.currentTarget.querySelector("span").style.display = "block"}
                             onMouseOut={(e) => e.currentTarget.querySelector("span").style.display = "none"}
                         >

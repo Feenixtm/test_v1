@@ -55,7 +55,7 @@ button:hover {
 }
 
 .yearly-date-block:hover {
-    background-color: var(--black-90);
+    background-color: var(--black-90) !important;
     cursor: pointer;
 }
 
