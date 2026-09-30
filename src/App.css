@@ -35,3 +35,32 @@ button:hover {
 .dark-transparent-bg {
     background-color: rgba(0, 0, 0, 0.5)
 }
+
+/* Yearly Heatmap Styles */
+.yearly-heatmap-container {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    max-height: 8rem;
+    gap: 1px; 
+}
+
+.yearly-date-block, .hidden-yearly-date-block {
+    padding: 0.5625rem;
+}
+
+.yearly-date-block {
+    /* background-color: var(--black-45); */
+    color: var(--white-241);
+}
+
+.yearly-date-block:hover {
+    background-color: var(--black-90);
+    cursor: pointer;
+}
+
+.hidden-yearly-date-block {
+    /* background-color: rgba(255, 0, 0, 0.5); */
+    color: var(--white-241);
+}
+
