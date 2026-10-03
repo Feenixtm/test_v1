@@ -1,6 +1,10 @@
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom';
 
-const Login = () => {
+const Login = (props) => {
+  const setIsLoggedIn = props.setIsLoggedIn;
+  const setUser = props.setUser;
+
   const [usernameOrEmail, setUsernameOrEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -28,6 +32,15 @@ const Login = () => {
       setError(error.message);
       console.error('Error logging in:', error);
     }
+  }
+
+  const navigate = useNavigate();
+
+  const fakeLogin = () => {
+    setIsLoggedIn(true);
+    setUser({ username: 'Guest', email: 'guest@example.com' });
+    navigate('/');
+    alert("Guest mode activated. You can now access other routes.");
   }
 
   return (
@@ -58,7 +71,13 @@ const Login = () => {
 
           <p>Don't have an account? <a href="/sign-up" className="text-blue-500">Sign Up</a></p>
 
-          <button className="py-2 border hover:bg-black hover:text-white cursor-pointer" type="button">Login</button>
+          <button className="py-1 border hover:bg-black hover:text-white cursor-pointer" type="button">Login</button>
+
+          <div className="mt-4">
+            <p className="text-center">Don't want to make an account?<br/> Then try out:</p>
+            <button className="w-full py-1 border hover:bg-black hover:text-white cursor-pointer" type="button" onClick={() => {fakeLogin()}}>Guest Mode</button>
+          </div>
+          
         </form>
     </div>
   )

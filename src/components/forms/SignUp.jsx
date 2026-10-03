@@ -78,7 +78,8 @@ const SignUp = () => {
           {error && <p className="text-red-500">{error}</p>}
           <p>Already have an account? <a href="/login" className="text-blue-500">Login</a></p>
 
-          <button className="py-2 border hover:bg-black hover:text-white cursor-pointer" type="button">Sign Up</button>
+          <button className="py-1 border hover:bg-black hover:text-white cursor-pointer" type="button">Sign Up</button>
+          <button className="py-1 border hover:bg-black hover:text-white cursor-pointer" type="button">Guest Mode</button>
         </form>
     </div>
   )
