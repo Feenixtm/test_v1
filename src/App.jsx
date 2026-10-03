@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom';
 import './App.css'
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
@@ -13,31 +14,44 @@ import Tasks from './features/tasks/components/Tasks';
 import YearlyHeatmap from './features/heatmaps/components/YearlyHeatmap';
 import MonthlyHeatmap from './features/heatmaps/components/MonthlyHeatmap';
 
+import ProtectedRoutes from './components/ProtectedRoutes';
 
 function App() {
+  const [user, setUser] = useState(null);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!isLoggedIn) {
+      navigate('/login', { replace: true });
+    }
+  }, []);
 
   return (
     <>
-      <BrowserRouter>
 
-        <DevHeader/>
+      <DevHeader/>
 
-        <main className="flex justify-center items-center p-4 bg-gray-500 h-[calc(100vh-2.5rem)]">
+      <main className="flex justify-center items-center p-4 bg-gray-500 h-[calc(100vh-2.5rem)]">
 
-        <Routes>
+      <Routes>
+
+        <Route element={<ProtectedRoutes isLoggedIn={isLoggedIn}/>}>
           <Route path="/" element={<Home />} />
-          <Route path="/heatmaps/yearly" element={<YearlyHeatmap />} />
+          {/* <Route path="/heatmaps/yearly" element={<YearlyHeatmap />} /> */}
           <Route path="/heatmaps/monthly" element={<MonthlyHeatmap />} />
           <Route path="/journal" element={<Journal />} />
           <Route path="/habits" element={<Habits />} />
           <Route path="/tasks" element={<Tasks />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/sign-up" element={<SignUp />} />
-        </Routes>
+        </Route>
 
-        </main>
+        <Route path="/login" element={<Login setIsLoggedIn={setIsLoggedIn} setUser={setUser}  />} />
+        <Route path="/sign-up" element={<SignUp />} />
+      </Routes>
 
-      </BrowserRouter>
+      </main>
+
     </>
   )
 }

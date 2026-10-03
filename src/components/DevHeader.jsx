@@ -9,7 +9,7 @@ const DevHeader = () => {
                     <Link to="/journal">Journal</Link>
                     <Link to="/habits">Habits</Link>
                     <Link to="/tasks">Tasks</Link>
-                    <Link to="/heatmaps/yearly">Yearly Heatmap</Link>
+                    {/* <Link to="/heatmaps/yearly">Yearly Heatmap</Link> */}
                     <Link to="/heatmaps/monthly">Monthly Heatmap</Link>
                 </div>
                 
