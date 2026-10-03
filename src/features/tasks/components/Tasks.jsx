@@ -1,11 +1,13 @@
 import React from 'react';
 import { useState, useEffect, useRef } from 'react';
-import AddTaskOverlay from './AddTaskOverlay';
+import TaskOverlay from './TaskOverlay';
 
 const Tasks = () => {
     const [tasks, setTasks] = useState([]);
-    const [showOverlay, setShowOverlay] = useState(false);
+    const [taskId, setTaskId] = useState(null);
 
+    const [overlayType, setOverlayType] = useState('None');
+    
     const mockTasks = [
         {
             id: 1,
@@ -48,11 +50,13 @@ const Tasks = () => {
     return (
         <div className="container p-4 rounded-[0.25rem] flex flex-col gap-4">
 
-            <AddTaskOverlay 
-                showOverlay={showOverlay} 
-                setShowOverlay={setShowOverlay} 
+            <TaskOverlay 
+                overlayType={overlayType}
+                setOverlayType={setOverlayType}
                 tasks={tasks}
                 setTasks={setTasks} 
+                taskId={taskId}
+                setTaskId={setTaskId}
             />
 
             <h1 className="text-[1.5rem] font-semibold">Tasks</h1>
@@ -74,11 +78,17 @@ const Tasks = () => {
                                                 const allTasksCopy = [...tasks];
                                                 const taskIndex = task.id - 1;
                                                 allTasksCopy[taskIndex].completed = !allTasksCopy[taskIndex].completed;
-                                                allTasksCopy[taskIndex].dateCompleted = `${new Date().toDateString()} - ${new Date().toLocaleTimeString()}`;
+
+                                                if (!allTasksCopy[taskIndex].completed === true) {
+                                                    allTasksCopy[taskIndex].dateCompleted = null;
+                                                } else if (!allTasksCopy[taskIndex].completed === false) {
+                                                    allTasksCopy[taskIndex].dateCompleted = `${new Date().toDateString()} - ${new Date().toLocaleTimeString()}`;
+                                                }
+                                                
                                                 setTasks(allTasksCopy);
                                             }}></input>
                                         </div>
-                                        <button className="border px-2 w-fit self-end mt-2 text-[0.875rem]" type="button" onClick={() => setShowOverlay(true)}>Edit</button>
+                                        <button className="border px-2 w-fit self-end mt-2 text-[0.875rem]" type="button" onClick={() => { setOverlayType("Edit"), setTaskId(task.id); console.log(task.id) }}>Edit</button>
                                     </div>
                                 ))
                             }
@@ -87,7 +97,7 @@ const Tasks = () => {
                 ))
             }
 
-            <button className="border px-2 py-1 w-fit" onClick={() => setShowOverlay(true)}>Add a task</button>
+            <button className="border px-2 py-1 w-fit" onClick={() => { setOverlayType("Create"), setTaskId(null) }}>Create a task</button>
         </div>
     );
 };
