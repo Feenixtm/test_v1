@@ -41,12 +41,12 @@ button:hover {
     display: flex;
     flex-direction: column;
     flex-wrap: wrap;
-    max-height: 8rem;
+    /* max-height: 8rem; */
     gap: 1px; 
 }
 
 .yearly-date-block, .hidden-yearly-date-block {
-    padding: 0.5625rem;
+    /* padding: 0.5625rem; */
 }
 
 .yearly-date-block {
