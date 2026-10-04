@@ -80,6 +80,7 @@ const Journal = () => {
 
             <form className="flex flex-col gap-4">
                 <div className="flex flex-col gap-4">
+                    <label>Morning Entry</label>
                     <textarea
                         className="p-2 border w-full"
                         rows={6}
@@ -88,6 +89,7 @@ const Journal = () => {
                         onChange={(e) => setMorningEntryEntry(e.target.value)}
                     />
 
+                    <label>Afternoon Entry</label>
                     <textarea
                         className="p-2 border w-full"
                         rows={6}
@@ -96,6 +98,7 @@ const Journal = () => {
                         onChange={(e) => setAfternoonEntry(e.target.value)}
                     />
 
+                    <label>Evening Entry</label>
                     <textarea
                         className="p-2 border w-full"
                         rows={6}
