@@ -64,3 +64,20 @@ button:hover {
     color: var(--white-241);
 }
 
+.monthly-date-block, .hidden-monthly-date-block {
+    height: 2rem;
+    width: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+}
+
+.monthly-date-block {
+    /* border: 1px solid white; */
+    background-color: var(--black-45);
+}
+
+.hidden-monthly-date-block {
+    
+}
