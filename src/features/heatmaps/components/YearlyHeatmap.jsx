@@ -1,6 +1,7 @@
 
 import React from 'react';
 import { useState, useEffect } from 'react';
+import { checkForCurrentStreak, checkForLongestStreakv2 } from '../functions/Streaks';
 
 const YearlyHeatmap = (props) => {
     const { habits, habitId, setHabitId, selectedDate, setSelectedDate } = props;
@@ -9,17 +10,10 @@ const YearlyHeatmap = (props) => {
     const [allViewableDates, setAllViewableDates] = useState([]);
     const [completedDates, setCompletedDates] = useState([]);
 
-    useEffect(() => {
-        if (habits !== null) {
-            setCompletedDates([...habits.find(habit => habit.id === Number(habitId))?.datesDone]);
-        }
-    }, [habits, habitId]);
-
-    const mockCompletedDates = [
-        new Date(2026, 0, 1).toDateString(),
-        new Date(2026, 0, 2).toDateString(),
-        new Date(2026, 0, 4).toDateString(),   
-    ]
+    const [currentStreak, setCurrentStreak] = useState(0);
+    const [longestStreak, setLongestStreak] = useState(0);
+    const [currentStreakStartingDate, setCurrentStreakStartingDate] = useState(null);
+    const [longestStreakStartingDate, setLongestStreakStartingDate] = useState(null);
 
     /*
         All viewable dates
@@ -32,17 +26,47 @@ const YearlyHeatmap = (props) => {
     useEffect(() => {
         setYear(new Date().getFullYear());
     
-        console.log(selectedDate);
-        console.log(selectedDate.toDateString());
+        // console.log(selectedDate);
+        // console.log(selectedDate.toDateString());
     }, []);
 
     useEffect(() => {
+        if (habits === null) {
+            // console.log("No habits here...");
+            return;
+        }
+
+        const relevantHabit = habits.find(habit => habit.id === Number(habitId));
+        
+        // console.log(relevantHabit.datesDone); 
+
+        setCompletedDates([]);
+        setCurrentStreak(0);
+        setLongestStreak(0);
+        setCurrentStreakStartingDate(null);
+        setLongestStreakStartingDate(null);
+
+        if (relevantHabit.datesDone && relevantHabit.datesDone.length > 0) {
+            setCompletedDates(relevantHabit.datesDone);
+            const { currentStreak, currentStreakStartingDate } = checkForCurrentStreak(relevantHabit.datesDone, selectedDate);
+            const { longestStreak, streakStartDate } = checkForLongestStreakv2(relevantHabit.datesDone);
+
+            setCurrentStreak(currentStreak);
+            setLongestStreak(longestStreak);
+            setCurrentStreakStartingDate(currentStreakStartingDate);
+            setLongestStreakStartingDate(streakStartDate);
+        }
+    }, [habits, habitId]);
+
+    useEffect(() => {
         const startDate = new Date(year, 0, 1);
+        console.log(startDate);
         const dates = []
 
         for (let date = new Date(startDate); date.getFullYear() === year; date.setDate(date.getDate() + 1)) {
             dates.push(new Date(date));
         }
+
         setAllViewableDates(dates);
     }, [year]);
 
@@ -89,7 +113,14 @@ const YearlyHeatmap = (props) => {
                 </div>
             </div>
 
-            <div className="yearly-heatmap-container max-h-[6rem] xl:max-h-[8rem]">
+            <div className="flex gap-4 justify-between">
+                <p>Current Streak: {currentStreak}</p>
+                <p>Start of Current Streak: { currentStreakStartingDate ? currentStreakStartingDate.toDateString() : "N/A"}</p>
+                <p>Longest Streak: {longestStreak}</p>
+                <p>Start of Longest Streak: {longestStreakStartingDate ? longestStreakStartingDate.toDateString() : "N/A"}</p>
+            </div>
+
+            <div className="yearly-heatmap-container max-h-[6rem] xl:max-h-[8.25rem]">
                 { 
                     new Date(year, 0, 1).getDay() - 1 !== -1 && new Date(year, 0, 1).getDay() - 1 !== 7 &&
                     Array( new Date(year, 0, 1).getDay() - 1 ).fill().map((_, index) => {
@@ -101,7 +132,7 @@ const YearlyHeatmap = (props) => {
                         <div 
                             key={index} 
                             className="yearly-date-block relative p-[0.375rem] xl:p-[0.5625rem]" 
-                            style={{ backgroundColor: completedDates.includes(date.toDateString()) ? "green" : date.toDateString() === selectedDate.toDateString() ? "var(--black-90)" : "var(--black-45)" }}
+                            style={{ backgroundColor: completedDates.map(date => date.toDateString()).includes(date.toDateString()) ? "green" : date.toDateString() === selectedDate.toDateString() ? "var(--black-90)" : "var(--black-45)" }}
                             onMouseOver={(e) => e.currentTarget.querySelector("span").style.display = "block"}
                             onMouseOut={(e) => e.currentTarget.querySelector("span").style.display = "none"}
                             onClick={() => { console.log(date.toDateString()); setSelectedDate(date); }}

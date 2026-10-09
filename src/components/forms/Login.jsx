@@ -9,25 +9,26 @@ const Login = (props) => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
 
-  async function handleSubmit(e) {
+  async function handleLogin(e) {
     e.preventDefault();
+    setError("");
 
     try {
-        const response = await fetch('/auth/login', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({ usernameOrEmail, password })
-        });
+      const response = await fetch('http://localhost:5050/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ username: usernameOrEmail, password: password })
+      });
 
-        if (!response.ok) {
-          throw new Error('Login failed');
-          setError('Login failed');
-        }
+      if (!response.ok) {
+        throw new Error('Login failed. Response not okay...');
+        setError('Login failed');
+      }
 
-        const data = await response.json();
-        console.log('Login successful:', data);
+      const data = await response.json();
+      console.log('Login successful:', data);
     } catch (error) {
       setError(error.message);
       console.error('Error logging in:', error);
@@ -47,7 +48,7 @@ const Login = (props) => {
     <div className="flex flex-col gap-4 justify-center items-center border p-6 w-fit min-w-[18rem]">
         <h1 className="text-[1.5rem] font-semibold">Login</h1>
 
-        <form className="flex flex-col gap-2 w-full" onSubmit={handleSubmit}>
+        <form className="flex flex-col gap-2 w-full" onSubmit={handleLogin}>
 
           <input
             className="p-2 border"
@@ -71,7 +72,11 @@ const Login = (props) => {
 
           <p>Don't have an account? <a href="/sign-up" className="text-blue-500">Sign Up</a></p>
 
-          <button className="py-1 border hover:bg-black hover:text-white cursor-pointer" type="button">Login</button>
+          <button 
+            className="py-1 border hover:bg-black hover:text-white cursor-pointer" 
+            type="button"
+            onClick={(e) => { handleLogin(e) }}
+          >Login</button>
 
           <div className="mt-4">
             <p className="text-center">Don't want to make an account?<br/> Then try out:</p>

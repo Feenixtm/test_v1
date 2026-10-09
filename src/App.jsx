@@ -18,14 +18,33 @@ import ProtectedRoutes from './components/ProtectedRoutes';
 
 function App() {
   const [user, setUser] = useState(null);
+  const [userData, setUserData] = useState(null); 
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   const navigate = useNavigate();
 
+  // const fetchData = async () => {
+  //   try {
+  //     const response = await fetch("http://localhost:5050/journal", {
+  //       method: "GET",
+  //     });
+
+  //     const data = await response.json();
+  //     console.log(data);
+  //     setUserData(data);
+
+  //   } catch (error) {
+  //     console.error("Error fetching user data:", error);
+  //   }
+  // }
+
   useEffect(() => {
-    if (!isLoggedIn) {
-      navigate('/login', { replace: true });
-    }
+    // if (!isLoggedIn) {
+    //   navigate('/login', { replace: true });
+    //   return;
+    // }
+    
+    // fetchData();
   }, []);
 
   return (

@@ -16,13 +16,26 @@ const Habits = () => {
             id: 1, 
             name: 'Drink Protein Shake',
             description: 'Description for Drink Protein Shake',
-            datesDone: [ "Thu Oct 01 2026" ]
+            datesDone: [ ]
         },
         { 
             id: 2, 
             name: 'Coding hour',
             description: 'Description for Coding hour: Spend an hour coding every day.',
-            datesDone: [ "Fri Oct 02 2026" ]
+            datesDone: [ 
+                new Date("2026/09/23"),
+                new Date("2026/09/25"),
+                new Date("2026/09/26"),
+                new Date("2026/09/27"),
+                new Date("2026/10/02"),
+                new Date("2026/10/03"),
+                new Date("2026/10/04"),
+                new Date("2026/10/05"),
+                new Date("2026/10/06"),
+                new Date("2026/10/07"),
+                new Date("2026/10/08"),
+                new Date("2026/10/09"),
+            ]
         },
     ]
 
