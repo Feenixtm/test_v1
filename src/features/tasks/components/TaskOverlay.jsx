@@ -1,119 +1,247 @@
-import React from 'react';
-import { useState, useRef, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 
 const TaskOverlay = (props) => {
-    const overlayType = props.overlayType;
-    const setOverlayType = props.setOverlayType;
+  // Props v.2
+  const accessToken = props.accessToken;
 
-    const tasks = props.tasks;
-    const setTasks = props.setTasks;
+  const userTasks = props.userTasks;
+  const setUserTasks = props.setUserTasks;
+  const currentTask = props.currentTask;
+  const setCurrentTask = props.setCurrentTask;
 
-    const taskId = props.taskId;
-    const setTaskId = props.setTaskId;
+  const setShowOverlay = props.setShowOverlay;
+  const createOrEditMode = props.createOrEditMode;
 
-    const [title, setTitle] = useState('');
-    const [description, setDescription] = useState('');
+  const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
+  const [dueDate, setDueDate] = useState("");
+  const [isDone, setIsDone] = useState(false);
+  const [dateDone, setDateDone] = useState("");
+
+  // ------------------------------
+  // --- Initialize Form Fields --- WIP
+  // ------------------------------
+
+  useEffect(() => {
+    // console.log(currentTask);
     
-    const overlayRef = useRef();
 
-    const handleAddTask = (e) => {
-        e.preventDefault();
+    if (currentTask!== null) {
 
-        const newTask = {
-            id: tasks.length + 1,
-            title, 
-            description,
-            completed: false,
-            dateCompleted: null
-        }
+      console.log("Date Done:", currentTask.dateDone);
+      console.log("Date Due:", currentTask.dueDate);
 
-        console.log(newTask);
+      const reformattedDateDone = currentTask.dateDone !== null ? currentTask.dateDone.replaceAll("/", "-") : "";
+      const reformattedDueDate = currentTask.dueDate !== null ? currentTask.dueDate.replaceAll("/", "-") : "";
 
-        setTasks([...tasks, newTask]);
-        hideOverlay();
+      setTitle(currentTask.title);
+      setDescription(currentTask.description);
+      setIsDone(currentTask.isDone);
+      setDateDone(reformattedDateDone);
+      setDueDate(reformattedDueDate);
+
+    } else {
+      setTitle("");
+      setDescription("");
+      setDueDate("");
+      setDateDone("");
+      setIsDone(false);
+    }
+    
+  }, [currentTask])
+
+  // ------------------------------------------------------------
+  // --- Update input fields depending on Create or Edit mode --- WIP
+  // ------------------------------------------------------------
+
+  useEffect(() => {
+    if (createOrEditMode === "Create") {
+      setTitle("");
+      setDescription("");
+      setDueDate("");
+      setDateDone("");
+      setIsDone(false);
+    } else if (createOrEditMode === "Edit") {
+      const reformattedDateDone = currentTask.dateDone !== null ? currentTask.dateDone.replaceAll("/", "-") : "";
+      const reformattedDueDate = currentTask.dueDate !== null ? currentTask.dueDate.replaceAll("/", "-") : "";
+
+      setTitle(currentTask.title);
+      setDescription(currentTask.description);
+      setIsDone(currentTask.isDone);
+      setDateDone(reformattedDateDone);
+      setDueDate(reformattedDueDate);
+    }
+  }, [createOrEditMode])
+
+  // ----------------------
+  // --- Create Task v2 --- Looks good?
+  // ----------------------
+
+  async function createTask() {
+    try {
+      // console.log("Creating task...");
+
+      const response = await fetch('http://localhost:5050/tasks', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          "Authorization": `Bearer ${accessToken}`
+        },
+        body: JSON.stringify({
+          title,
+          description,
+          dueDate,
+          isDone: false,
+          dateDone: null
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to create task');
+      }
+
+      const data = await response.json();
+      // console.log(data);
+      
+      setUserTasks([...userTasks, data.task]);
+      setShowOverlay(false);
+      alert("Task created successfully!");
+
+    } catch (error) {
+      console.error('Error creating task:', error);
+    }
+  }
+
+  // ----------------------
+  // --- Update Task v2 ---  Look good?
+  // ----------------------
+
+  async function updateTask() {
+    try {
+      // console.log("Updating task...");
+
+      const response = await fetch(`http://localhost:5050/tasks/${currentTask.id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          "Authorization": `Bearer ${accessToken}`
+        },
+        body: JSON.stringify({
+          title,
+          description,
+          dueDate,
+          isDone: dateDone !== null && dateDone.trim() !== "" ? true : false,
+          dateDone: dateDone.trim() !== "" ? dateDone : null
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to update task');
+      }
+
+      const data = await response.json();
+      // console.log(data);
+
+      setUserTasks(userTasks.map(task => task.id === currentTask.id ? data.task : task));
+      setShowOverlay(false);
+      alert("Task updated successfully!");
+
+      } catch (error) {
+        console.error('Error updating task:', error);
+      }
     }
 
-    const handleEditTask = (e) => {
-        e.preventDefault();
-        console.log("Editing...")
+    // ----------------------
+    // --- Delete Task v2 ---  Looks good?
+    // ----------------------
 
-        const currentTask = tasks.find(task => task.id === taskId);
+    async function deleteTask() {
+      try {
+        // console.log("Deleting task...");
 
-        const updatedTask = {
-            id: taskId,
-            title, 
-            description,
-            completed: currentTask.completed,
-            dateCompleted: currentTask.dateCompleted,
+        const response = await fetch(`http://localhost:5050/tasks/${currentTask.id}`, {
+          method: 'DELETE',
+          headers: {
+            "Authorization": `Bearer ${accessToken}`
+          }
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to delete task');
         }
 
-        console.log(updatedTask);
+        const data = await response.json();
+        // console.log(data);
 
-        const tasksCopy = [...tasks];
-        const taskIndex = tasksCopy.findIndex(task => task.id === taskId);
-        tasksCopy[taskIndex] = updatedTask;
+        setUserTasks(userTasks.filter(task => task.id !== currentTask.id ));
+        setShowOverlay(false);
+        alert("Task deleted successfully!");
 
-        setTasks([...tasksCopy]);
-        hideOverlay();
+      } catch (error) {
+        console.error('Error deleting task:', error.message);
+      }
     }
-
-    const hideOverlay = () => {
-        if (overlayRef.current.style.display === "" || overlayRef.current.style.display === "flex") {
-            overlayRef.current.style.display = 'none';
-        }
-
-        setOverlayType("None");
-        setTitle('');
-        setDescription('');
-        // console.log(overlayRef.current.style);
-    }
-
-    useEffect(() => {
-        if (taskId !== null) {
-            const currentTask = tasks.find(task => task.id === taskId);
-            setTitle(currentTask.title);
-            setDescription(currentTask.description);
-        } else if (taskId === null){
-            setTitle('');
-            setDescription('');
-        }
-    }, [overlayType, taskId]);
 
     return (
+      <div 
+        className="fixed top-0 left-0 w-[100vw] h-full flex justify-center items-center dark-transparent-bg z-20"
+        onClick={() => { setShowOverlay(false); }}
+      >
+
         <div 
-            ref={overlayRef}  
-            style={{ display: overlayType === "None" ? 'none': 'flex' }}
-            className="absolute top-0 left-0 w-[100vw] h-[100vh] flex justify-center items-center dark-transparent-bg" 
-            onClick={() => hideOverlay()}
+          className="relative bg-blue-800 p-4 rounded w-full min-w-[325px] max-w-[640px] m-8 z-10"
+          onClick={(e) => e.stopPropagation()}
         >
+          <h2 className="text-[1.25rem] font-semibold mb-4">{createOrEditMode} Task</h2>
+          <button className="absolute top-0 right-0 rounded-r-[0.25rem] px-4 py-2" onClick={() => {setShowOverlay(false)}}>X</button>
 
-            <div className="relative bg-blue-800 p-4 rounded  w-full min-w-[325px] max-w-[475px]" onClick={(e) => e.stopPropagation()}>
-                <button className="absolute top-[0.5rem] right-[0.5rem] text-[1rem] font-bold px-1" onClick={() => hideOverlay()} type="button">X</button>
+          <form className="flex flex-col gap-2">
+            <label>Title:</label>
+            <input className="border p-2 rounded" type="text" value={title} onChange={(e) => setTitle(e.target.value)}/>
 
-                <h1 className="text-[1.25rem] font-semibold">{ overlayType } Task</h1>
-                <form className="flex flex-col gap-2">
-                    <label>Title:</label>
-                    <input className="border p-2 rounded" type="text" name="title" value={title} onChange={(e) => setTitle(e.target.value)} />
-                    
-                    <label>Description:</label>    
-                    <textarea className="border p-2 rounded" name="description" value={description} onChange={(e) => setDescription(e.target.value)}></textarea>
-                    
-                    <button 
-                        className="border px-2 py-1 w-fit self-end text-[0.875rem]" 
-                        type="button" 
-                        onClick={(e) => {
-                            if (overlayType === "Create") {
-                                handleAddTask(e);
-                            } else if (overlayType === "Edit") {
-                                handleEditTask(e);
-                            }
-                        }}
-                    >{ overlayType === "Create" ? "Add Task" : "Save" }</button>
-                </form>
+            <label>Description:</label>
+            <textarea className="border p-2 rounded" rows="8" value={description} onChange={(e) => setDescription(e.target.value)}></textarea>
+
+            <div className="flex gap-4 w-full">
+              <div className='flex flex-col w-full'>
+                <label>Due Date:</label>
+                <input type='date' className='w-full border px-2 py-1 rounded' value={dueDate} onChange={(e) => setDueDate(e.target.value)}></input>
+              </div>
+
+              <div className="flex flex-col w-full">
+                <label>Date Completed:</label>
+                <input type='date' className='w-full border px-2 py-1 rounded' value={dateDone} onChange={(e) => setDateDone(e.target.value)}></input>
+              </div>
             </div>
 
+            <div className="flex" style={{ justifyContent: createOrEditMode === "Create" ? "end" : "space-between" }}>
+              {
+                createOrEditMode === "Edit" && 
+                <button 
+                  className="border px-2 py-1" 
+                  style={{ color: "red" }}
+                  type='button'
+                  onClick={() => { deleteTask() }}
+                >Delete</button>
+              }
+              <button 
+                className="border px-2 py-1" 
+                type="button" 
+                onClick={() => {
+                  if (createOrEditMode === "Create") {
+                    createTask();
+                  } else if (createOrEditMode === "Edit") {
+                    updateTask();
+                  }
+                }}>{ createOrEditMode === "Create" ? "Add Task" : "Save" }</button>
+            </div>
+          </form> 
         </div>
-    );
-};
 
+      </div>
+      // <input type="date" className="border p-2 rounded w-full" name="dueDate" value={`${dueDate ? dueDate.replaceAll("/", "-") : ""}`} onChange={(e) => {setDueDate(e.target.value); console.log(e.target.value)}} />
+      // <input type="date" className="border p-2 rounded w-full" name="dateDone" value={`${dateDone ? dateDone.replaceAll("/", "-") : ""}`} onChange={(e) => {setDateDone(e.target.value); console.log(e.target.value)}} />
+    );
+  };
+  
 export default TaskOverlay;

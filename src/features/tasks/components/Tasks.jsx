@@ -1,105 +1,146 @@
-import React from 'react';
 import { useState, useEffect, useRef } from 'react';
 import TaskOverlay from './TaskOverlay';
+import YearlyHeatmapForTasks from '../../heatmaps/components/YearlyHeatmapForTasks';
+import MonthlyHeatmapForTasks from '../../heatmaps/components/MonthlyHeatmapForTasks';
 
-const Tasks = () => {
-    const [tasks, setTasks] = useState([]);
-    const [taskId, setTaskId] = useState(null);
+const Tasks = (props) => {
+  const accessToken = props.accessToken;
+  const userTasks = props.userTasks;
+  const setUserTasks = props.setUserTasks;
 
-    const [overlayType, setOverlayType] = useState('None');
-    
-    const mockTasks = [
-        {
-            id: 1,
-            title: 'Task 1',
-            description: 'Description for Task 1',
-            completed: false,
-            dateCompleted: null
-        },
-        { 
-            id: 2,
-            title: 'Task 2',
-            description: 'Description for Task 2',
-            completed: false,
-            dateCompleted: null,
-        },
-        {
-            id: 3,
-            title: 'Task 3',
-            description: 'Description for Task 3',
-            completed: false,
-            dateCompleted: null,
-        }
-    ]
+  const [currentTask, setCurrentTask] = useState(null);
+  const [showOverlay, setShowOverlay] = useState(false);
+  const [createOrEditMode, setCreateOrEditMode] = useState('Create'); // 'Create' or 'Edit'
 
-    const taskType = [
-        {
-            completionType: "Incomplete",
-            isCompleted: false,
-        },
-        {
-            completionType: "Completed",
-            isCompleted: true,
-        }
-    ]
+  const [date, setDate] = useState(new Date());
 
-    useEffect(() => {
-        setTasks(mockTasks);
-    }, [])
+  const taskCategories = [
+    {
+      name: "Tasks Due Today",
+      relevantTasks: userTasks.filter(task => task?.dueDate === date.toISOString().split('T')[0] && task.dateDone === null) ?? []
+    },
+    {
+      name: "Tasks Completed Today",
+      relevantTasks: userTasks.filter(task => task?.dateDone === date.toISOString().split('T')[0]) ?? []
+    },
+    {
+      name: "Other Incomplete Tasks",
+      relevantTasks: userTasks.filter(task => task?.dueDate !== date.toISOString().split('T')[0] &&  task.dateDone === null) ?? []
+    },
+    {
+      name: "Other Completed Tasks",
+      relevantTasks: userTasks.filter(task => task?.dateDone !== date.toISOString().split('T')[0] && task.dateDone !== null) ?? []
+    },
+  ]
 
-    return (
-        <div className="container p-4 rounded-[0.25rem] flex flex-col gap-4">
+  // Collapse Divs
 
-            <TaskOverlay 
-                overlayType={overlayType}
-                setOverlayType={setOverlayType}
-                tasks={tasks}
-                setTasks={setTasks} 
-                taskId={taskId}
-                setTaskId={setTaskId}
-            />
+  const collapseParentElement = (e, totalTasks) => {
 
-            <h1 className="text-[1.5rem] font-semibold">Tasks</h1>
+    if (totalTasks < 1) {
+      // console.log("Nothing there. Collapsing denied...");
+      return;
+    }
 
-            { 
-                taskType.map(type => (
-                    <div>
-                        <h2>{ type.completionType } Tasks</h2>
+    if (e.currentTarget.parentElement.style.maxHeight !== "48px") {
+      e.currentTarget.parentElement.style.maxHeight = "48px"
+    } else if (e.currentTarget.parentElement.style.maxHeight === "48px") {
+      e.currentTarget.parentElement.style.maxHeight = "100%"
+    }
+  }
 
-                        <div className="flex flex-wrap gap-4">
-                            {
-                                tasks.filter(task => task.completed === type.isCompleted).sort((a, b) => new Date(b.dateCompleted) - new Date(a.dateCompleted)).map(task => (
-                                    <div key={task.id} className="flex flex-col border px-4 py-2 rounded w-fit">
-                                        <h2 className="text-lg font-semibold">{task.title}</h2>
-                                        <p>{task.description}</p>
-                                        <div className="flex items-center gap-2">
-                                            <span>{task.dateCompleted !== null ? task.dateCompleted : 'In progress'}</span>
-                                            <input type="checkbox" checked={task.completed} onChange={() => {
-                                                const allTasksCopy = [...tasks];
-                                                const taskIndex = task.id - 1;
-                                                allTasksCopy[taskIndex].completed = !allTasksCopy[taskIndex].completed;
+  return (
+    <div className="flex flex-col gap-4 max-w-[880px] lg:max-w-[1031px]">
 
-                                                if (!allTasksCopy[taskIndex].completed === true) {
-                                                    allTasksCopy[taskIndex].dateCompleted = null;
-                                                } else if (!allTasksCopy[taskIndex].completed === false) {
-                                                    allTasksCopy[taskIndex].dateCompleted = `${new Date().toDateString()} - ${new Date().toLocaleTimeString()}`;
-                                                }
-                                                
-                                                setTasks(allTasksCopy);
-                                            }}></input>
-                                        </div>
-                                        <button className="border px-2 w-fit self-end mt-2 text-[0.875rem]" type="button" onClick={() => { setOverlayType("Edit"), setTaskId(task.id); console.log(task.id) }}>Edit</button>
-                                    </div>
-                                ))
-                            }
-                        </div>
-                    </div>
-                ))
-            }
+      {
+        showOverlay === true && 
 
-            <button className="border px-2 py-1 w-fit" onClick={() => { setOverlayType("Create"), setTaskId(null) }}>Create a task</button>
+        <TaskOverlay
+          setShowOverlay={setShowOverlay}
+          createOrEditMode={createOrEditMode}
+          currentTask={currentTask}
+          setCurrentTask={setCurrentTask}
+
+          userTasks={userTasks}
+          setUserTasks={setUserTasks}
+
+          accessToken={accessToken}
+        />
+      }
+
+      <MonthlyHeatmapForTasks
+        date={ date }
+        setDate={ setDate } 
+        currentTask={ currentTask }
+        dateDone={ currentTask?.dateDone || null }
+        dueDate={ currentTask?.dueDate || null} 
+      />
+      
+      {/* <YearlyHeatmapForTasks
+        date={ date }
+        setDate={ setDate } 
+        currentTask={ currentTask }
+        dateDone={ currentTask?.dateDone || null }
+        dueDate={ currentTask?.dueDate || null} 
+      /> */}
+
+      <div className="flex justify-between items-center p-4 rounded-[0.25rem] bg-[var(--black-33)]">
+        <p>SELECTED TASK: <span className="font-semibold">{ currentTask?.title || "N/A" }</span></p>
+
+        <div className="flex gap-8">
+          <span>Due: { currentTask?.dueDate || "N/A" }</span>
+          <span>Completed: { currentTask?.dateDone || "N/A" }</span>
         </div>
-    );
+        <button className="px-2 py-[0.125rem] h-fit border text-[0.875rem]" onClick={() => { setCreateOrEditMode("Edit"); setShowOverlay(true) }}>Edit Task</button>
+      </div>
+
+      <div className="flex flex-col gap-2 p-4 rounded-[0.25rem] bg-[var(--black-33)]">
+        <div className="flex justify-between items-center">
+          <h1 className="text-[1.5rem] font-semibold">All Tasks</h1>
+          <button className="px-2 py-[0.125rem] border text-[0.875rem] h-fit"  onClick={() => { setCreateOrEditMode("Create"); setShowOverlay(true) }}>Create New Task</button>
+        </div>
+        
+
+        <div className='flex flex-col gap-2'>
+          {
+            taskCategories.map((category, index) => {
+              return (
+                <div 
+                  className="overflow-hidden flex flex-col gap-4 pb-4 bg-[var(--black-15)]"
+                  style={{ maxHeight: '48px' }}
+                  key={ category.title }
+                >
+                  <div 
+                    className='flex justify-between items-center h-[3rem] px-4 py-4 border bg-[var(--black-45)] hover:bg-[var(--black-90)]' 
+                    onClick={(e) => { collapseParentElement(e, category.relevantTasks.length) }}
+                  >
+                    <h2 className="text-[1.125rem] font-bold cursor-pointer">{ category.name } {`(${category.relevantTasks.length > 0 ? category.relevantTasks.length : 0 })`}</h2>
+                  </div>
+
+                  <div className="flex gap-4 flex-wrap px-4">
+                    {
+                      (category.relevantTasks && category.relevantTasks.length >= 1) && category.relevantTasks.map((task, index) => {
+                        return (
+                          <div 
+                            key={task.id} 
+                            className={`flex flex-col border px-2 py-1 rounded w-fit cursor-pointer hover:bg-[var(--black-45)]`}
+                            onClick={() => { console.log(task); setCurrentTask(task) }}
+                          >
+                            <h2 className="">{task.title}</h2>
+                          </div>
+                        )
+                      })
+                    }
+                  </div>
+                </div>
+              )
+            })
+          }
+        </div>
+      </div>
+
+    </div>
+  );
 };
 
 export default Tasks;
