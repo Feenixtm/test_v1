@@ -11,61 +11,61 @@ import Journal from './features/journal/components/Journal';
 import Habits from './features/habits/components/Habits';
 import Tasks from './features/tasks/components/Tasks';
 
-import YearlyHeatmap from './features/heatmaps/components/YearlyHeatmap';
+import YearlyHeatmap from './features/heatmaps/components/YearlyHeatmapForHabits';
 import MonthlyHeatmap from './features/heatmaps/components/MonthlyHeatmap';
 
 import ProtectedRoutes from './components/ProtectedRoutes';
+import CustomTextAreas from './features/custom-text-areas/components/CustomTextAreas';
 
 function App() {
   const [user, setUser] = useState(null);
-  const [userData, setUserData] = useState(null); 
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [accessToken, setAccessToken] = useState(null);
+
+  const [userCustomTextAreas, setUserCustomTextAreas] = useState(null);
+  const [userEntries, setUserEntries] = useState(null);
+  const [userHabits, setUserHabits] = useState(null);
+  const [userTasks, setUserTasks] = useState(null);
 
   const navigate = useNavigate();
-
-  // const fetchData = async () => {
-  //   try {
-  //     const response = await fetch("http://localhost:5050/journal", {
-  //       method: "GET",
-  //     });
-
-  //     const data = await response.json();
-  //     console.log(data);
-  //     setUserData(data);
-
-  //   } catch (error) {
-  //     console.error("Error fetching user data:", error);
-  //   }
-  // }
-
-  useEffect(() => {
-    // if (!isLoggedIn) {
-    //   navigate('/login', { replace: true });
-    //   return;
-    // }
-    
-    // fetchData();
-  }, []);
 
   return (
     <>
 
-      <DevHeader/>
+      <DevHeader 
+        user={user} 
+        setUser={setUser} 
+        accessToken={ accessToken }
+        setAccessToken={setAccessToken}
+      />
 
-      <main className="flex justify-center items-center p-4 bg-gray-500 h-[calc(100vh-2.5rem)]">
+      <main className="flex justify-center items-center p-4 bg-gray-500 min-h-[calc(100vh-2.5rem)]">
 
       <Routes>
 
-        <Route element={<ProtectedRoutes isLoggedIn={isLoggedIn}/>}>
-          <Route path="/" element={<Home />} />
+        <Route element={<ProtectedRoutes user={user} />}>
+        
+          <Route path="/" element={<Home accessToken={accessToken} />} />
           {/* <Route path="/heatmaps/yearly" element={<YearlyHeatmap />} /> */}
+          <Route path="/custom-text-areas" element={<CustomTextAreas accessToken={ accessToken } userCustomTextAreas={userCustomTextAreas} setUserCustomTextAreas={ setUserCustomTextAreas }/>}></Route>
           <Route path="/heatmaps/monthly" element={<MonthlyHeatmap />} />
-          <Route path="/journal" element={<Journal />} />
-          <Route path="/habits" element={<Habits />} />
-          <Route path="/tasks" element={<Tasks />} />
+
+          <Route path="/journal" element={<Journal accessToken={accessToken} userEntries={userEntries} setUserEntries={setUserEntries} />} />
+          <Route path="/habits" element={<Habits accessToken={accessToken} userHabits={userHabits} setUserHabits={setUserHabits} />} />
+          <Route path="/tasks" element={<Tasks accessToken={accessToken} userTasks={userTasks} setUserTasks={setUserTasks} />} />
+
         </Route>
 
-        <Route path="/login" element={<Login setIsLoggedIn={setIsLoggedIn} setUser={setUser}  />} />
+        <Route path="/login" element={
+          <Login 
+            setUser={setUser} 
+            setAccessToken={setAccessToken}
+            setUserCustomTextAreas={setUserCustomTextAreas} 
+            setUserEntries={setUserEntries}
+            setUserHabits={setUserHabits}
+            setUserTasks={setUserTasks}
+          />
+        }/>
+
         <Route path="/sign-up" element={<SignUp />} />
       </Routes>
 
