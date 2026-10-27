@@ -2,8 +2,13 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 
 const Login = (props) => {
-  const setIsLoggedIn = props.setIsLoggedIn;
   const setUser = props.setUser;
+  const setAccessToken = props.setAccessToken;
+
+  const setUserCustomTextAreas = props.setUserCustomTextAreas;
+  const setUserEntries = props.setUserEntries;
+  const setUserHabits = props.setUserHabits;
+  const setUserTasks = props.setUserTasks;
 
   const [usernameOrEmail, setUsernameOrEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -29,8 +34,21 @@ const Login = (props) => {
 
       const data = await response.json();
       console.log('Login successful:', data);
+
+      setAccessToken(data.accessToken);
+      setUser(data.existingUserData.username);
+
+      setUserCustomTextAreas(data.existingUserData.customTextAreas.sort((a, b) => a.id - b.id));
+      setUserEntries(data.existingUserData.journalEntries);
+      setUserHabits(data.existingUserData.habits);
+      setUserTasks(data.existingUserData.tasks);
+      
+      navigate("/");
+      alert("Login successful!");
+      
+
     } catch (error) {
-      setError(error.message);
+      setError("Login Failed: Server might be down");
       console.error('Error logging in:', error);
     }
   }
@@ -38,7 +56,6 @@ const Login = (props) => {
   const navigate = useNavigate();
 
   const fakeLogin = () => {
-    setIsLoggedIn(true);
     setUser({ username: 'Guest', email: 'guest@example.com' });
     navigate('/');
     alert("Guest mode activated. You can now access other routes.");
