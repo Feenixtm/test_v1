@@ -24,7 +24,8 @@ const Journal = (props) => {
 
   // Return to today's date on route change.
   useEffect(() => {
-    setDate(new Date())
+    // setDate(new Date());
+    setDate(new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate()))
   }, [])
 
   useEffect(() => {
@@ -81,6 +82,7 @@ const Journal = (props) => {
       console.log(data);
 
       setUserEntries(prev => [...prev, data.newJournalEntry]);
+      setEntryId(data.newJournalEntry.id);
 
       alert("Journal entry successfully created!");
     } catch (error) {
@@ -136,6 +138,10 @@ const Journal = (props) => {
       console.log(data);
 
       setUserEntries(prev => prev.filter(entry => entry.id !== entryId));
+      setEntryId(null);
+      setMorningEntryEntry('');
+      setAfternoonEntry('');
+      setEveningEntry('');
 
       alert("Journal entry deleted successfully!");
     } catch (error) {
@@ -165,7 +171,7 @@ const Journal = (props) => {
         setDate={setDate}
       />
 
-      <div className="container flex flex-col gap-4 border px-8 py-6 rounded-[0.5rem]">
+      <div className="flex flex-col gap-4 border px-8 py-6 rounded-[0.5rem]">
         <div className="flex justify-between">
           <h1 className="text-[1.5rem] font-semibold">Journal</h1>
 
@@ -198,7 +204,7 @@ const Journal = (props) => {
             <label>Morning Entry</label>
             <textarea
               className="p-2 border w-full"
-              rows={6}
+              rows={8}
               placeholder="Make a plan for the day..."
               value={morningEntry}
               onChange={(e) => setMorningEntryEntry(e.target.value)}
@@ -207,7 +213,7 @@ const Journal = (props) => {
             <label>Afternoon Entry</label>
             <textarea
               className="p-2 border w-full"
-              rows={6}
+              rows={8}
               placeholder="Introspect in the moment..."
               value={afternoonEntry}
               onChange={(e) => setAfternoonEntry(e.target.value)}
@@ -216,7 +222,7 @@ const Journal = (props) => {
             <label>Evening Entry</label>
             <textarea
               className="p-2 border w-full"
-              rows={6}
+              rows={8}
               placeholder="Reflect on how the day went..."
               value={eveningEntry}
               onChange={(e) => setEveningEntry(e.target.value)}

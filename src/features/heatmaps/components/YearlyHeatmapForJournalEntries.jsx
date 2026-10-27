@@ -50,7 +50,7 @@ const YearlyHeatmapForJournalEntries = (props) => {
         </div>
     </div>
 
-    <div className="yearly-heatmap-container max-h-[6rem] xl:max-h-[8.25rem]">
+    <div className="yearly-heatmap-container">
         { 
           new Date(currYear, 0, 1).getDay() - 1 !== -1 && new Date(currYear, 0, 1).getDay() - 1 !== 7 
           && Array( new Date(currYear, 0, 1).getDay() - 1 ).fill().map((_, index) => {
