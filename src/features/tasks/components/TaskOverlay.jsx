@@ -12,6 +12,9 @@ const TaskOverlay = (props) => {
   const setShowOverlay = props.setShowOverlay;
   const createOrEditMode = props.createOrEditMode;
 
+  const showDeleteOverlay = props.showDeleteOverlay;
+  const setShowDeleteOverlay = props.setShowDeleteOverlay;
+
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [dueDate, setDueDate] = useState("");
@@ -151,37 +154,6 @@ const TaskOverlay = (props) => {
       }
     }
 
-    // ----------------------
-    // --- Delete Task v2 ---  Looks good?
-    // ----------------------
-
-    async function deleteTask() {
-      try {
-        // console.log("Deleting task...");
-
-        const response = await fetch(`http://localhost:5050/tasks/${currentTask.id}`, {
-          method: 'DELETE',
-          headers: {
-            "Authorization": `Bearer ${accessToken}`
-          }
-        });
-
-        if (!response.ok) {
-          throw new Error('Failed to delete task');
-        }
-
-        const data = await response.json();
-        // console.log(data);
-
-        setUserTasks(userTasks.filter(task => task.id !== currentTask.id ));
-        setShowOverlay(false);
-        alert("Task deleted successfully!");
-
-      } catch (error) {
-        console.error('Error deleting task:', error.message);
-      }
-    }
-
     return (
       <div 
         className="fixed top-0 left-0 w-[100vw] h-full flex justify-center items-center dark-transparent-bg z-20"
@@ -221,7 +193,7 @@ const TaskOverlay = (props) => {
                   className="border px-2 py-1" 
                   style={{ color: "red" }}
                   type='button'
-                  onClick={() => { deleteTask() }}
+                  onClick={() => setShowDeleteOverlay(true)}
                 >Delete</button>
               }
               <button 

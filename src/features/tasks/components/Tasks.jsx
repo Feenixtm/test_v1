@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import TaskOverlay from './TaskOverlay';
 import YearlyHeatmapForTasks from '../../heatmaps/components/YearlyHeatmapForTasks';
 import MonthlyHeatmapForTasks from '../../heatmaps/components/MonthlyHeatmapForTasks';
+import DeleteConfirmation from '../../../components/DeleteConfirmation';
 
 const Tasks = (props) => {
   const accessToken = props.accessToken;
@@ -11,6 +12,7 @@ const Tasks = (props) => {
   const [currentTask, setCurrentTask] = useState(null);
   const [showOverlay, setShowOverlay] = useState(false);
   const [createOrEditMode, setCreateOrEditMode] = useState('Create'); // 'Create' or 'Edit'
+  const [showDeleteOverlay, setShowDeleteOverlay] = useState(false);
 
   const [date, setDate] = useState(new Date());
 
@@ -49,14 +51,45 @@ const Tasks = (props) => {
     }
   }
 
+  async function deleteTask() {
+    try {
+      const response = await fetch(`http://localhost:5050/tasks/${currentTask.id}`, {
+        method: 'DELETE',
+        headers: {
+          "Authorization": `Bearer ${accessToken}`
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to delete task');
+      }
+
+      const data = await response.json();
+      // console.log(data);
+
+      setCurrentTask(null);
+      setUserTasks(userTasks.filter(task => task.id !== currentTask.id ));
+      setShowDeleteOverlay(false);
+      setShowOverlay(false);
+      alert("Task deleted successfully!");
+    } catch (error) {
+      console.error('Error deleting task:', error.message);
+    }
+  }
+
   return (
     <div className="flex flex-col gap-4 max-w-[880px] lg:max-w-[1031px]">
 
-      {
-        showOverlay === true && 
+      { showDeleteOverlay === true && <DeleteConfirmation deleteTask={deleteTask} deleteOverlayType={"Task"}/> }
+
+      {showOverlay === true && 
 
         <TaskOverlay
           setShowOverlay={setShowOverlay}
+          
+          showDeleteOverlay={ showDeleteOverlay }
+          setShowDeleteOverlay={ setShowDeleteOverlay }
+
           createOrEditMode={createOrEditMode}
           currentTask={currentTask}
           setCurrentTask={setCurrentTask}
@@ -91,7 +124,10 @@ const Tasks = (props) => {
           <span>Due: { currentTask?.dueDate || "N/A" }</span>
           <span>Completed: { currentTask?.dateDone || "N/A" }</span>
         </div>
-        <button className="px-2 py-[0.125rem] h-fit border text-[0.875rem]" onClick={() => { setCreateOrEditMode("Edit"); setShowOverlay(true) }}>Edit Task</button>
+        {
+          currentTask !== null && <button className="px-2 py-[0.125rem] h-fit border text-[0.875rem]" onClick={() => { setCreateOrEditMode("Edit"); setShowOverlay(true) }}>Edit Task</button>
+        }
+        
       </div>
 
       <div className="flex flex-col gap-2 p-4 rounded-[0.25rem] bg-[var(--black-33)]">
