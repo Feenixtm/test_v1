@@ -1,10 +1,13 @@
 import { useState, useEffect } from 'react';
 import YearlyHeatmapForJournalEntries from '../../heatmaps/components/YearlyHeatmapForJournalEntries';
+import DeleteConfirmation from '../../../components/DeleteConfirmation';
 
 const Journal = (props) => {
   const accessToken = props.accessToken;
   const userEntries = props.userEntries;
   const setUserEntries = props.setUserEntries;
+
+  const [showDeleteOverlay, setShowDeleteOverlay] = useState(false);
 
   const [date, setDate] = useState(new Date());
   // OLD - new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate());
@@ -152,6 +155,10 @@ const Journal = (props) => {
   return (
     <div className="flex flex-col gap-4 h-full py-8">
 
+      { showDeleteOverlay === true && 
+        <DeleteConfirmation deleteJournalEntry={deleteJournalEntry} deleteOverlayType={"Journal"} setShowDeleteOverlay={setShowDeleteOverlay}/>
+      }
+
       <YearlyHeatmapForJournalEntries
         datesWithCOMPLETEJournalEntries={ 
           allJournalEntries.filter(entry => 
@@ -231,11 +238,13 @@ const Journal = (props) => {
 
           <div className="flex justify-between gap-4">
 
-            <button
-              className="self-start px-4 py-2 border w-fit hover:bg-black hover:text-white cursor-pointer rounded-[0.125rem] text-red-500"
-              type="button"
-              onClick={() => deleteJournalEntry()}
-            >Delete</button>
+            { entryId && (
+              <button
+                className="self-start px-4 py-2 border w-fit hover:bg-black hover:text-white cursor-pointer rounded-[0.125rem] text-red-500"
+                type="button"
+                onClick={() => setShowDeleteOverlay(true)}
+              >Delete</button>
+            )}
 
             { entryId && (
               <button
@@ -246,11 +255,14 @@ const Journal = (props) => {
             )}
 
             {!entryId && (
-              <button
-                className="self-end px-4 py-2 border w-fit hover:bg-black hover:text-white cursor-pointer rounded-[0.125rem]"
-                type="button"
-                onClick={() => createJournalEntry()}
-              >Create</button>
+              <>
+                <div></div>
+                <button
+                  className="self-end px-4 py-2 border w-fit hover:bg-black hover:text-white cursor-pointer rounded-[0.125rem]"
+                  type="button"
+                  onClick={() => createJournalEntry()}
+                >Create</button>
+              </>
             )}
 
           </div>
