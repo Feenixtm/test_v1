@@ -1,11 +1,9 @@
-import React from 'react';
-
-const Home = () => {
+const Home = (props) => {
     return (
-        <div>
-            Welcome to Logger!
+        <div className="flex flex-col gap-2">
+            <h1>Welcome to Logger!</h1>
         </div>
-    );
+    ); 
 };
 
 export default Home;    

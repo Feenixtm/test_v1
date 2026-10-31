@@ -39,7 +39,7 @@ const DevHeader = (props) => {
           <Link to="/habits">Habits</Link>
           <Link to="/tasks">Tasks</Link>
           {/* <Link to="/heatmaps/yearly">Yearly Heatmap</Link> */}
-          <Link to="/heatmaps/monthly">Monthly Heatmap</Link>
+          {/* <Link to="/heatmaps/monthly">Monthly Heatmap</Link> */}
         </div>
 
         {
