@@ -1,111 +1,138 @@
-import React from 'react';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 
 const HabitOverlay = (props) => {
-        const overlayType = props.overlayType;
-        const setOverlayType = props.setOverlayType;
-        const habits = props.habits;
-        const setHabits = props.setHabits;
+  const accessToken = props.accessToken;
 
-        const habitId = props.habitId;
-        const setHabitId = props.setHabitId;
+  const showOverlay = props.showOverlay;
+  const setShowOverlay = props.setShowOverlay;
+  const createOrEditMode = props.createOrEditMode;
+  const setCreateOrEditMode = props.setCreateOrEditMode;
 
-        const [name, setName] = useState('');
-        const [description, setDescription] = useState('');
+  const userHabits = props.userHabits;
+  const setUserHabits = props.setUserHabits;
+  const currentHabit = props.currentHabit;
+  const setCurrentHabit = props.setCurrentHabit;
 
-        const overlayRef = useRef();
+  const [name, setName] = useState('');
+  const [description, setDescription] = useState('');
 
-        const handleAddHabit = (e) => {
+  useEffect(() => {
+    setName(currentHabit.name || "");
+    setDescription(currentHabit.description || "");
+  }, [currentHabit])
 
-            const newHabit = {
-                id: habits.length + 1,
-                name,
-                description,
-                datesDone: []
-            }
+  useEffect(() => {
+    if (createOrEditMode === "Create") {
+      setName("");
+      setDescription("");
+    }
+  }, [createOrEditMode])
 
-            setHabits([...habits, newHabit]);
-            hideOverlay();
-        }
+  async function createHabit () {
+    if (name.trim() === "") {
+      console.log("This Habit has no name. Abandoning habit creation...");
+      return;
+    }
 
-        const handleEditHabit = (e) => {
-            const habitsCopy = [...habits];
-            const habitCopy = habitsCopy.find(habit => habit.id === Number(habitId));
+    try {
+      const response = await fetch("http://localhost:5050/habits/", {
+        method: "POST",
+        headers: {
+          'Authorization': `Bearer ${ accessToken }`,
+          'Content-Type': "application/json"
+        },
+        body: JSON.stringify({
+          name,
+          description,
+        })
+      });
 
-            const updatedHabit = {
-                id: Number(habitId),
-                name,
-                description,
-                datesDone: [...habitCopy.datesDone]
-            }
+      if (!response.ok) {
+        throw new Erorr("Couldn't create a new habit:", response.status);
+      }
 
-            console.log(habitsCopy);
-            console.log(updatedHabit);
+      const data = await response.json();
+      console.log(data);
 
-            const habitIndex = habitsCopy.findIndex(habit => habit.id === Number(habitId));
-            habitsCopy[habitIndex] = updatedHabit;
+      setUserHabits([...userHabits, data.createdHabit]);
+      setShowOverlay(false);
+      alert("Habit successfully created!");
 
-            setHabits([...habitsCopy]);
-            hideOverlay();
-        }
+    } catch (error) {
+      console.error("Error creating habit: ", error);
+    }
+  }
 
-        const hideOverlay = () => {
-            if (overlayRef.current.style.display === "" || overlayRef.current.style.display === "flex") {
-                overlayRef.current.style.display = 'none';
-            }
+  async function editHabit () {
+    try {
+      const response = await fetch(`http://localhost:5050/habits/${ currentHabit.id }`, {
+        method: "PUT",
+        headers: {
+          'Authorization': `Bearer ${ accessToken }`,
+          'Content-Type': 'application/json' 
+        },
+        body: JSON.stringify({
+          name,
+          description
+        })
+      });
 
-            setOverlayType("None");
-            setName('');
-            setDescription('');
-            // console.log(overlayRef.current.style);
-        }
+      if (!response.ok) {
+        throw new Error("Couldn't edit habit: ", response.status);
+      }
 
-        useEffect(() => {
-            if (overlayType === "Create") {
-                setName('');
-                setDescription('');
-            } else if (overlayType === "Edit" && habits) {
-                const habit = habits.find(habit => habit.id === Number(habitId));
-                setName(habit.name);
-                setDescription(habit.description);
-            }
-        }, [overlayType, habitId]);
+      const data = await response.json();
+      console.log(data);
 
-    return (
-        <div 
-            ref={overlayRef}  
-            style={{ display: overlayType !== "None" ? 'flex' : 'none' }}
-            className="absolute hidden top-0 left-0 w-[100vw] h-[100vh] flex justify-center items-center dark-transparent-bg z-20" 
-            onClick={() => hideOverlay()}
-        >
+      setCurrentHabit(data.updatedHabit);
+      setUserHabits(prev => prev.map(habit => habit.id === currentHabit.id ? data.updatedHabit : habit));
+      setShowOverlay(false);
+      alert("Habit successfully edited!");
+      
+    } catch (error) {
+      console.error("Error creating habit: ", error);
+    }
+  }
 
-            <div className="relative bg-blue-800 p-4 rounded  w-full min-w-[325px] max-w-[475px]" onClick={(e) => e.stopPropagation()}>
-                <button className="absolute top-[0.5rem] right-[0.5rem] text-[1rem] font-bold px-1" onClick={() => hideOverlay()} type="button">X</button>
+  return (
+    <div
+      className="absolute top-0 left-0 w-[100vw] h-[100vh] flex justify-center items-center dark-transparent-bg z-20"
+      onClick={() => { setShowOverlay(false) }}
+    >
 
-                <h1 className="text-[1.25rem] font-semibold">{ overlayType === "Create" ? "Create" : "Edit" } Habit</h1>
-                <form className="flex flex-col gap-2">
-                    <label>Title:</label>
-                    <input className="border p-2 rounded" type="text" name="name" value={name} onChange={(e) => setName(e.target.value)} />
-                    
-                    <label>Description:</label>    
-                    <textarea className="border p-2 rounded" name="description" value={description} onChange={(e) => setDescription(e.target.value)}></textarea>
-                    
-                    <button 
-                        className="border px-2 py-1 w-fit self-end text-[0.875rem]" 
-                        type="button" 
-                        onClick={(e) => {
-                            if (overlayType === "Create") {
-                                handleAddHabit(e);
-                            } else {
-                                handleEditHabit(e);
-                            }
-                        }}
-                    >{ overlayType === "Create" ? "Add Habit" : "Save" }</button>
-                </form>
-            </div>
+      <div className="relative bg-blue-800 p-4 rounded  w-full min-w-[325px] max-w-[475px]" onClick={(e) => e.stopPropagation()}>
+        <button className="absolute top-[0.5rem] right-[0.5rem] text-[1rem] font-bold px-1" onClick={() => { setShowOverlay(false) }} type="button">X</button>
 
-        </div>
-    );
+        <h1 className="text-[1.25rem] font-semibold">{createOrEditMode} Habit</h1>
+        <form className="flex flex-col gap-2">
+          <label>Title:</label>
+          <input className="border p-2 rounded" type="text" name="name" value={name} onChange={(e) => setName(e.target.value)} required/>
+
+          <label>Description:</label>
+          <textarea 
+            className="border p-2 rounded" 
+            name="description" 
+            value={description} 
+            onChange={(e) => setDescription(e.target.value)}
+            rows={8}
+          ></textarea>
+
+          <button
+            className="border px-2 py-1 w-fit self-end text-[0.875rem]"
+            type="button"
+            onClick={(e) => {
+              if (createOrEditMode === "Create") {
+                createHabit();
+              } else {
+                editHabit();
+              }
+            }}
+          >{createOrEditMode === "Create" ? "Create New Habit" : "Save"}</button>
+        </form>
+      </div>
+
+    </div>
+  );
 };
 
 export default HabitOverlay;
