@@ -19,6 +19,12 @@ const Journal = (props) => {
   const [afternoonEntry, setAfternoonEntry] = useState('');
   const [eveningEntry, setEveningEntry] = useState('');
 
+  const allSections = [
+    { label: "Morning Entry", value: morningEntry, setValue: setMorningEntryEntry, placeholder: "Make a plan for the day..." },
+    { label: "Afternoon Entry", value: afternoonEntry, setValue: setAfternoonEntry, placeholder: "Write down your thoughts..." },
+    { label: "Evening Entry", value: eveningEntry, setValue: setEveningEntry, placeholder: "Reflect on how the day went. Make plans for tomorrow..." }
+  ]
+
   const handleDateChange = (value) => {
     const newDate = new Date(date);
     newDate.setDate(newDate.getDate() + value);
@@ -153,7 +159,9 @@ const Journal = (props) => {
   }
 
   return (
-    <div className="flex flex-col gap-4 h-full py-8">
+    <div className="flex flex-col gap-4 my-6 h-full">
+
+      <h1 className="text-[1.5rem] font-semibold py-2">My Journal</h1>
 
       { showDeleteOverlay === true && 
         <DeleteConfirmation deleteJournalEntry={deleteJournalEntry} deleteOverlayType={"Journal"} setShowDeleteOverlay={setShowDeleteOverlay}/>
@@ -176,71 +184,52 @@ const Journal = (props) => {
         }
         date={date}
         setDate={setDate}
+        handleDateChange={handleDateChange}
       />
 
-      <div className="flex flex-col gap-4 border px-8 py-6 rounded-[0.5rem]">
+      <div className="flex flex-col gap-4 max-w-[988px] xl:max-w-[1136.23px]">
+
         <div className="flex justify-between">
-          <h1 className="text-[1.5rem] font-semibold">Journal</h1>
+          <button
+              className="px-4 border border-[var(--border)] self-center"
+              onClick={() => handleDateChange(-1)}
+            >{`<`}</button>
 
-          <div className="flex gap-4 items-center">
+            <span className="text-[1.5rem] font-semibold underline">{date.toDateString()}</span>
 
-            <span className="text-[1.25rem]">{date.toDateString()}</span>
-
-            <div className="flex gap-2">
-              <button
-                className="px-2 border py-1 self-center rounded-[0.125rem]"
-                onClick={() => handleDateChange(-1)}
-              >{`<`}</button>
-
-              <button
-                className="px-2 border py-1 self-center rounded-[0.125rem]"
-                onClick={() => setDate(new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate()))}
-              >{`Today`}</button>
-
-              <button
-                className="px-2 border py-1 self-center rounded-[0.125rem]"
-                onClick={() => handleDateChange(1)}
-              >{`>`}</button>
-            </div>
-
-          </div>
+            <button
+              className="px-4 border border-[var(--border)] self-center"
+              onClick={() => handleDateChange(1)}
+            >{`>`}</button>
         </div>
+        
+        {/* <hr></hr> */}
 
         <form className="flex flex-col gap-4">
           <div className="flex flex-col gap-4">
-            <label>Morning Entry</label>
-            <textarea
-              className="p-2 border w-full"
-              rows={8}
-              placeholder="Make a plan for the day..."
-              value={morningEntry}
-              onChange={(e) => setMorningEntryEntry(e.target.value)}
-            />
 
-            <label>Afternoon Entry</label>
-            <textarea
-              className="p-2 border w-full"
-              rows={8}
-              placeholder="Introspect in the moment..."
-              value={afternoonEntry}
-              onChange={(e) => setAfternoonEntry(e.target.value)}
-            />
+            {allSections.map((section, index) => (
+              <details open key={index} className="flex flex-col">
+                <summary className="text-[1.25rem] font-semibold cursor-pointer">{section.label}</summary>
+                <div>
+                  <textarea
+                    className="journal-textarea mt-2 p-2 border w-full"
+                    // rows={8}
+                    placeholder={section.placeholder}
+                    value={section.value}
+                    onChange={(e) => section.setValue(e.target.value)}
+                  />
+                </div>
+              </details>
+            ))}
 
-            <label>Evening Entry</label>
-            <textarea
-              className="p-2 border w-full"
-              rows={8}
-              placeholder="Reflect on how the day went..."
-              value={eveningEntry}
-              onChange={(e) => setEveningEntry(e.target.value)}
-            />
           </div>
 
-          <div className="flex justify-between gap-4">
+          <div className="flex justify-end gap-2">
 
             { entryId && (
               <button
-                className="self-start px-4 py-2 border w-fit hover:bg-black hover:text-white cursor-pointer rounded-[0.125rem] text-red-500"
+                className="px-2 py-1 border w-fit hover:bg-black hover:text-white cursor-pointer rounded-[0.125rem] text-red-500"
                 type="button"
                 onClick={() => setShowDeleteOverlay(true)}
               >Delete</button>
@@ -248,7 +237,7 @@ const Journal = (props) => {
 
             { entryId && (
               <button
-                className="self-end px-4 py-2 border w-fit hover:bg-black hover:text-white cursor-pointer rounded-[0.125rem]"
+                className="px-2 py-1 border w-fit hover:bg-black hover:text-white cursor-pointer rounded-[0.125rem]"
                 type="button"
                 onClick={() => updateJournalEntry()}
               >Save</button>
@@ -258,7 +247,7 @@ const Journal = (props) => {
               <>
                 <div></div>
                 <button
-                  className="self-end px-4 py-2 border w-fit hover:bg-black hover:text-white cursor-pointer rounded-[0.125rem]"
+                  className="px-2 py-1 border w-fit hover:bg-black hover:text-white cursor-pointer rounded-[0.125rem]"
                   type="button"
                   onClick={() => createJournalEntry()}
                 >Create</button>

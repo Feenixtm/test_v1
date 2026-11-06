@@ -15,13 +15,15 @@ import YearlyHeatmap from './features/heatmaps/components/YearlyHeatmapForHabits
 import MonthlyHeatmap from './features/heatmaps/components/MonthlyHeatmap';
 
 import ProtectedRoutes from './components/ProtectedRoutes';
-import CustomTextAreas from './features/custom-text-areas/components/CustomTextAreas';
+import Notes from './features/notes/components/Notes';
 
 function App() {
+  const [theme, setTheme] = useState('light');
+
   const [user, setUser] = useState(null);
   const [accessToken, setAccessToken] = useState(null);
 
-  const [userCustomTextAreas, setUserCustomTextAreas] = useState(null);
+  const [userNotes, setUserNotes] = useState(null);
   const [userEntries, setUserEntries] = useState(null);
   const [userHabits, setUserHabits] = useState(null);
   const [userTasks, setUserTasks] = useState(null);
@@ -36,9 +38,11 @@ function App() {
         setUser={setUser} 
         accessToken={ accessToken }
         setAccessToken={setAccessToken}
+        theme={theme}
+        setTheme={setTheme}
       />
 
-      <main className="flex justify-center items-center p-4 bg-gray-500 min-h-[calc(100vh-2.5rem)]">
+      <main className="flex justify-center items-center min-h-[calc(100vh-2.5rem)]" data-theme={theme}>
 
       <Routes>
 
@@ -46,7 +50,7 @@ function App() {
         
           <Route path="/" element={<Home accessToken={accessToken} />} />
           {/* <Route path="/heatmaps/yearly" element={<YearlyHeatmap />} /> */}
-          <Route path="/custom-text-areas" element={<CustomTextAreas accessToken={ accessToken } userCustomTextAreas={userCustomTextAreas} setUserCustomTextAreas={ setUserCustomTextAreas }/>}></Route>
+          <Route path="/notes" element={<Notes accessToken={ accessToken } userNotes={userNotes} setUserNotes={ setUserNotes }/>}></Route>
           <Route path="/heatmaps/monthly" element={<MonthlyHeatmap />} />
 
           <Route path="/journal" element={<Journal accessToken={accessToken} userEntries={userEntries} setUserEntries={setUserEntries} />} />
@@ -59,7 +63,7 @@ function App() {
           <Login 
             setUser={setUser} 
             setAccessToken={setAccessToken}
-            setUserCustomTextAreas={setUserCustomTextAreas} 
+            setUserNotes={setUserNotes} 
             setUserEntries={setUserEntries}
             setUserHabits={setUserHabits}
             setUserTasks={setUserTasks}
