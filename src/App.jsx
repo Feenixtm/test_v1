@@ -48,7 +48,7 @@ function App() {
 
         <Route element={<ProtectedRoutes user={user} />}>
         
-          <Route path="/" element={<Home accessToken={accessToken} />} />
+          <Route path="/" element={<Home accessToken={accessToken} username={ user?.displayName || 'USER' } />} />
           {/* <Route path="/heatmaps/yearly" element={<YearlyHeatmap />} /> */}
           <Route path="/notes" element={<Notes accessToken={ accessToken } userNotes={userNotes} setUserNotes={ setUserNotes }/>}></Route>
           <Route path="/heatmaps/monthly" element={<MonthlyHeatmap />} />

@@ -36,7 +36,7 @@ const Login = (props) => {
       console.log('Login successful:', data);
 
       setAccessToken(data.accessToken);
-      setUser(data.existingUserData.username);
+      setUser({ username: data.existingUserData.username, displayName: data.existingUserData.displayName });
 
       setUserNotes(data.existingUserData.customTextAreas.sort((a, b) => a.id - b.id));
       setUserEntries(data.existingUserData.journalEntries);

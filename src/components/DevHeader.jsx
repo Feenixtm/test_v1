@@ -34,35 +34,38 @@ const DevHeader = (props) => {
 
   return (
     <header className="px-4 py-2" data-theme={props.theme}>
-      <nav className="flex justify-between">
-        <div className="flex gap-4">
-          <Link to="/">Home</Link>
-          <Link to="/notes">Notes</Link>
-          <Link to="/journal">Journal</Link>
-          <Link to="/habits">OldHabits</Link>
-          <Link to="/tasks">OldTasks</Link>
-          <Link to="/color-test">ColorTest</Link>
-          {/* <Link to="/heatmaps/yearly">Yearly Heatmap</Link> */}
-          {/* <Link to="/heatmaps/monthly">Monthly Heatmap</Link> */}
-        </div>
+      <nav className="flex items-center gap-4"
+        style={{ justifyContent: user !== null ? "" : 'flex-end' }}
+      >
 
         {
           user !== null && (
-            <div className="flex gap-4">
-              <span>Welcome back {user || 'USER'}</span>
-              {/* <button onClick={() => { handleRefreshAccessToken() }}>Refresh Access Token</button> */}
-              
-              {theme === 'light' && <button onClick={() => { setTheme('dark') }}>Dark Mode</button>}
-              {theme === 'dark' && <button onClick={() => { setTheme('light') }}>Light Mode</button>}
-              
-              <button onClick={() => { setUser(null); setAccessToken(null); }}>Log Out</button>
+            <div className="flex w-full justify-between items-center">
+              <div>
+                <Link to='/' className="text-[1rem] font-semibold">Logger</Link>
+              </div>
+
+              <div className="absolute flex gap-4 left-1/2 -translate-x-1/2">
+                <Link to="/">Home</Link>
+                <Link to="/notes">Notes</Link>
+                <Link to="/journal">Journal</Link>
+                <Link to="/habits">OldHabits</Link>
+                <Link to="/tasks">OldTasks</Link>
+              </div>
+
+              <div className="flex gap-4">
+                {theme === 'light' && <button onClick={() => { setTheme('dark') }}>Dark Mode</button>}
+                {theme === 'dark' && <button onClick={() => { setTheme('light') }}>Light Mode</button>}
+                <button onClick={() => { setUser(null); setAccessToken(null); }}>Log Out</button>
+              </div>
             </div>
+
           )
         }
-
+      
         {
           user === null && (
-            <div className="flex gap-4">
+            <div className="flex self-end gap-4">
               <Link to="/login">Login</Link>
               <Link to="/sign-up">Sign Up</Link>
             </div>

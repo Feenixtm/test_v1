@@ -53,7 +53,7 @@
     --border: #f1f1f1;
     --button-bg: #212121;
     --button-text: #f1f1f1; 
-    --button-hover-bg: #2d2d2d;
+    --button-hover-bg: #444444;
     --button-hover-text: #f1f1f1;
     --header-text: #f1f1f1;
 
@@ -97,6 +97,10 @@ button:hover {
     background-color: var(--button-hover-bg);
     color: var(--button-hover-text);
     cursor: pointer;
+}
+
+.sidebar-button:hover {
+
 }
 
 .container {

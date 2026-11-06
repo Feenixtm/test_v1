@@ -21,54 +21,7 @@ const Notes = (props) => {
 
   const [textAreas, setTextAreas] = useState([]);
   const [textAreaId, setTextAreaId] = useState(null);
-
-  const mockTextAreas = [
-    {
-      name: "7 areas of Life: Career",
-      notes: "Test starting note"
-    },
-    {
-      name: "7 areas of Life: Emotional",
-      notes: null
-    },
-    {
-      name: "7 areas of Life: Financial",
-      notes: null
-    },
-    {
-      name: "7 areas of Life: Mental",
-      notes: null
-    },
-    {
-      name: "7 areas of Life: Physical",
-      notes: "Round 1 Outcome: Lose face fat, Lose love handles (~sub 20% Body fat), Hit weight lifting PRs: 50-55 lb dumbbell shoulder press. 45-90lb Dip/Pull-up.\nRound 1 Output: Calorie deficit, protein shakes daily. Gym for estimated 2+ months (Assuming 2.5lb increase in dumbbell and 5lb increase in pull-up/dip/barbell weekly. 10 or 20lbs monthly.) Dips are equivalent to 225 bench. ~315 RDL is equivalent to 405 Deadlift I think? 225 bench at 160lbs i 1.4x body weight. Weighted pull-up at 85-90 lbs is 1.4x body weight? Lots of benchmarks on strengthlevel.com. Maybe I should follow this. Seems like I'm aiming for intermediate level. \nRound 2: Haircut, Strawberry Skin, Skin-care routine, New Clothes\nRound 3: Dating app profile + photos"
-    },
-    {
-      name: "7 areas of Life: Relationship",
-      notes: null
-    },
-    {
-      name: "7 areas of Life: Spiritual",
-      notes: null
-    },
-    {
-      name: "Limiting Beliefs",
-      notes: null
-    },
-    {
-      name: "Roadblocks",
-      notes: null
-    },
-    {
-      name: "Role Model",
-      notes: null
-    },
-    {
-      name: "Tips",
-      notes: "Note. Another note \nNew line"
-    }
-  ]
-
+  
   async function deleteNote () {
     try {
       const response = await fetch(`http://localhost:5050/custom-text-areas/${ textAreaId }`, {
@@ -151,7 +104,7 @@ const Notes = (props) => {
 
       <div 
         className="fixed h-[calc(100vh-2.5rem)] top-[2.5rem] left-0
-        flex flex-col bg-[var(--quarternary-bg)] px-2"
+        flex flex-col bg-[var(--quarternary-bg)]"
         style={{ width: `${sidebarWidth}px` }}
       >
         <div className="flex gap-2 p-4 justify-center">
@@ -159,7 +112,7 @@ const Notes = (props) => {
         </div>
         {
           textAreas && textAreas.map((textArea, index) => (
-            <button key={index} className="text-start px-2 py-[0.1875rem]"
+            <button key={index} className="text-start px-4 py-[0.1875rem]"
               onClick={() => { 
                 setTitle(textArea.name); 
                 setContent(textArea.notes || ""); 
