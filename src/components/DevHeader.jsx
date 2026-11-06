@@ -46,7 +46,7 @@ const DevHeader = (props) => {
               </div>
 
               <div className="absolute flex gap-4 left-1/2 -translate-x-1/2">
-                <Link to="/">Home</Link>
+                {/* <Link to="/">Home</Link> */}
                 <Link to="/notes">Notes</Link>
                 <Link to="/journal">Journal</Link>
                 <Link to="/habits">OldHabits</Link>
