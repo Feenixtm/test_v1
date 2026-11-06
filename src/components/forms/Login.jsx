@@ -5,7 +5,7 @@ const Login = (props) => {
   const setUser = props.setUser;
   const setAccessToken = props.setAccessToken;
 
-  const setUserCustomTextAreas = props.setUserCustomTextAreas;
+  const setUserNotes = props.setUserNotes;
   const setUserEntries = props.setUserEntries;
   const setUserHabits = props.setUserHabits;
   const setUserTasks = props.setUserTasks;
@@ -38,7 +38,7 @@ const Login = (props) => {
       setAccessToken(data.accessToken);
       setUser(data.existingUserData.username);
 
-      setUserCustomTextAreas(data.existingUserData.customTextAreas.sort((a, b) => a.id - b.id));
+      setUserNotes(data.existingUserData.customTextAreas.sort((a, b) => a.id - b.id));
       setUserEntries(data.existingUserData.journalEntries);
       setUserHabits(data.existingUserData.habits);
       setUserTasks(data.existingUserData.tasks);

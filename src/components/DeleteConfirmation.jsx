@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 
 const DeleteConfirmation = (props) => {
-  const deleteCustomTextArea = props.deleteCustomTextArea;
+  const deleteNote = props.deleteNote;
   const deleteJournalEntry = props.deleteJournalEntry;
   const deleteHabit = props.deleteHabit;
   const deleteTask = props.deleteTask;
@@ -11,22 +11,22 @@ const DeleteConfirmation = (props) => {
 
   return (
     <div
-      className="fixed top-0 left-0 w-[100vw] h-[100vh] flex justify-center items-center dark-transparent-bg z-30"
+      className="fixed top-0 left-0 w-[100vw] h-[100vh] flex justify-center items-center bg-[var(--transparent-overlay-bg)] z-30"
       onClick={() => { setShowDeleteOverlay(false) }}
     >
-        <form className="p-4 rounded flex flex-col gap-2 items-center bg-blue-700" onClick={(e) => e.stopPropagation()}>
+        <form className="p-4 rounded flex flex-col gap-2 items-center bg-[var(--secondary-bg)]" onClick={(e) => e.stopPropagation()}>
           <h1>Are you sure you want to delete this { deleteOverlayType }?</h1>
 
           <div className="flex gap-4">
             <button 
-              className="border px-2 py-1 w-fit opacity-75" 
+              className="border px-2 py-1 w-fit" 
               onClick={() => setShowDeleteOverlay(false)}
               type="button"
             >Cancel</button> 
             
-            <button className="border px-2 py-1 w-fit text-[red]" onClick={() => {
+            <button className="border px-2 py-1 w-fit" onClick={() => {
               if (deleteOverlayType === "CustomTextArea") {
-                deleteCustomTextArea();
+                deleteNote();
               } else if (deleteOverlayType === "Journal") {
                 deleteJournalEntry();
               } else if (deleteOverlayType === "Habit") {
