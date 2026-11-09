@@ -14,7 +14,7 @@ const NotesOverlay = (props) => {
   
   async function createNote () {
     try {
-      const response = await fetch("http://localhost:5050/custom-text-areas/", {
+      const response = await fetch("http://localhost:5050/notes/", {
         method: "POST",
         headers: {
           'Content-Type': 'application/json',
@@ -26,23 +26,23 @@ const NotesOverlay = (props) => {
       });
 
       if (!response.ok) {
-        throw new Error("Could not create Custom Text Area");
+        throw new Error("Could not create Note");
       }
 
       const data = await response.json();
       console.log(data);
-      setUserNotes(prev => [...prev, data.customTextArea ]);
+      setUserNotes(prev => [...prev, data.newNote ]);
       setName("");
 
-      setTitle(data.customTextArea.name);
-      setContent(data.customTextArea.notes || "");
-      setTextAreaId(data.customTextArea.id);
+      setTitle(data.newNote.name);
+      setContent(data.newNote.notes || "");
+      setTextAreaId(data.newNote.id);
 
       setShowOverlay(false);
 
-      alert("Custom Text Area Created!");
+      alert("Note Created!");
     } catch (error) {
-      console.error("Erroring creating Custom Text Area", error);
+      console.error("Erroring creating Note", error);
     }
   }
   

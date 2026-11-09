@@ -24,7 +24,7 @@ const Notes = (props) => {
   
   async function deleteNote () {
     try {
-      const response = await fetch(`http://localhost:5050/custom-text-areas/${ textAreaId }`, {
+      const response = await fetch(`http://localhost:5050/notes/${ textAreaId }`, {
         method: "DELETE",
         headers: {
           'Authorization': `Bearer ${ accessToken }`
@@ -50,7 +50,7 @@ const Notes = (props) => {
 
     async function updateNote () {
     try {
-      const response = await fetch(`http://localhost:5050/custom-text-areas/${ textAreaId }`, {
+      const response = await fetch(`http://localhost:5050/notes/${ textAreaId }`, {
         method: "PUT",
         headers: {
           'Authorization': `Bearer ${ accessToken }`,
@@ -64,7 +64,7 @@ const Notes = (props) => {
 
       const data = await response.json();
       console.log(data);
-      setUserNotes(prev => prev.map(note => note.id === textAreaId ? data.customTextArea : note));
+      setUserNotes(prev => prev.map(note => note.id === textAreaId ? data.updatedNote : note));
 
       alert("Note Updated!");
     } catch (error) {
@@ -83,7 +83,7 @@ const Notes = (props) => {
         <DeleteConfirmation 
           setShowDeleteOverlay={setShowDeleteOverlay} 
           deleteNote={deleteNote} 
-          deleteOverlayType={"CustomTextArea"}
+          deleteOverlayType={"Note"}
         />
       }
 

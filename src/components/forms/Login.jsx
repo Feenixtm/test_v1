@@ -39,7 +39,7 @@ const Login = (props) => {
       setAccessToken(data.accessToken);
       setUser({ username: data.existingUserData.username, displayName: data.existingUserData.displayName });
 
-      setUserNotes(data.existingUserData.customTextAreas.sort((a, b) => a.id - b.id));
+      setUserNotes(data.existingUserData.notes.sort((a, b) => a.id - b.id));
       setUserEntries(data.existingUserData.journalEntries);
       setUserCheckpoints(data.existingUserData.checkpoints);
       setUserHabits(data.existingUserData.habits);

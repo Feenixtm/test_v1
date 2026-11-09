@@ -25,7 +25,7 @@ const DeleteConfirmation = (props) => {
             >Cancel</button> 
             
             <button className="border px-2 py-1 w-fit" onClick={() => {
-              if (deleteOverlayType === "CustomTextArea") {
+              if (deleteOverlayType === "Note") {
                 deleteNote();
               } else if (deleteOverlayType === "Journal") {
                 deleteJournalEntry();
