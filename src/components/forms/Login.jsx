@@ -7,6 +7,7 @@ const Login = (props) => {
 
   const setUserNotes = props.setUserNotes;
   const setUserEntries = props.setUserEntries;
+  const setUserCheckpoints = props.setUserCheckpoints;
   const setUserHabits = props.setUserHabits;
   const setUserTasks = props.setUserTasks;
 
@@ -40,6 +41,7 @@ const Login = (props) => {
 
       setUserNotes(data.existingUserData.customTextAreas.sort((a, b) => a.id - b.id));
       setUserEntries(data.existingUserData.journalEntries);
+      setUserCheckpoints(data.existingUserData.checkpoints);
       setUserHabits(data.existingUserData.habits);
       setUserTasks(data.existingUserData.tasks);
       

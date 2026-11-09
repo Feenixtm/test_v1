@@ -18,17 +18,19 @@ import ProtectedRoutes from './components/ProtectedRoutes';
 import Notes from './features/notes/components/Notes';
 
 function App() {
-  const [theme, setTheme] = useState('light');
+  const [theme, setTheme] = useState(() => {
+    return localStorage.getItem('theme') ??
+    (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
+  });
 
   const [user, setUser] = useState(null);
   const [accessToken, setAccessToken] = useState(null);
 
   const [userNotes, setUserNotes] = useState(null);
+  const [userCheckpoints, setUserCheckpoints] = useState(null);
   const [userEntries, setUserEntries] = useState(null);
   const [userHabits, setUserHabits] = useState(null);
   const [userTasks, setUserTasks] = useState(null);
-
-  const navigate = useNavigate();
 
   return (
     <>
@@ -53,7 +55,7 @@ function App() {
           <Route path="/notes" element={<Notes accessToken={ accessToken } userNotes={userNotes} setUserNotes={ setUserNotes }/>}></Route>
           <Route path="/heatmaps/monthly" element={<MonthlyHeatmap />} />
 
-          <Route path="/journal" element={<Journal accessToken={accessToken} userEntries={userEntries} setUserEntries={setUserEntries} />} />
+          <Route path="/journal" element={<Journal accessToken={accessToken} userEntries={userEntries} setUserEntries={setUserEntries} userCheckpoints={userCheckpoints} setUserCheckpoints={setUserCheckpoints} />} />
           <Route path="/habits" element={<Habits accessToken={accessToken} userHabits={userHabits} setUserHabits={setUserHabits} />} />
           <Route path="/tasks" element={<Tasks accessToken={accessToken} userTasks={userTasks} setUserTasks={setUserTasks} />} />
 
@@ -65,6 +67,7 @@ function App() {
             setAccessToken={setAccessToken}
             setUserNotes={setUserNotes} 
             setUserEntries={setUserEntries}
+            setUserCheckpoints={setUserCheckpoints}
             setUserHabits={setUserHabits}
             setUserTasks={setUserTasks}
           />

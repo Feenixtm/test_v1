@@ -54,8 +54,8 @@ const DevHeader = (props) => {
               </div>
 
               <div className="flex gap-4">
-                {theme === 'light' && <button onClick={() => { setTheme('dark') }}>Dark Mode</button>}
-                {theme === 'dark' && <button onClick={() => { setTheme('light') }}>Light Mode</button>}
+                {theme === 'light' && <button onClick={() => { setTheme('dark'); localStorage.setItem('theme', 'dark'); }}>Dark Mode</button>}
+                {theme === 'dark' && <button onClick={() => { setTheme('light'); localStorage.setItem('theme', 'light'); }}>Light Mode</button>}
                 <button onClick={() => { setUser(null); setAccessToken(null); }}>Log Out</button>
               </div>
             </div>

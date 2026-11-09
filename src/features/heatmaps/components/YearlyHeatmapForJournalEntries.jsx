@@ -9,7 +9,9 @@ const YearlyHeatmapForJournalEntries = (props) => {
   const setDate = props.setDate;
   const datesWithCOMPLETEJournalEntries = props.datesWithCOMPLETEJournalEntries;
   const datesWithINCOMPLETEJournalEntries = props.datesWithINCOMPLETEJournalEntries;
-
+  // const weeklyCPDate = props.weeklyCPDate;
+  // const monthlyCPDate = props.monthlyCPDate;
+  
   const [currYear, setCurrYear] = useState(new Date().getFullYear());
   const [allHeatmapDates, setAllHeatmapDates] = useState([]);
 
